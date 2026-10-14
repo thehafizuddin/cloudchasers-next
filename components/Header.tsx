@@ -39,17 +39,17 @@ export default function Header() {
           <div className="cc-topbar__group">
             <span className="cc-topbar__item">
               <span className="material-symbols-rounded">call</span>
-              <span>Call Us 24/7</span>
+              <span className="cc-topbar__label">Call Us 24/7</span>
               <a href={`tel:${SITE.phone}`}>{SITE.phoneDisplay}</a>
             </span>
-            <span className="cc-topbar__item">
+            <span className="cc-topbar__item cc-topbar__item--mail">
               <span className="material-symbols-rounded">mail</span>
-              <span>Send Us Mail</span>
+              <span className="cc-topbar__label">Send Us Mail</span>
               <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
             </span>
-            <span className="cc-topbar__item">
+            <span className="cc-topbar__item cc-topbar__item--location">
               <span className="material-symbols-rounded">location_on</span>
-              <span>Our Location</span>
+              <span className="cc-topbar__label">Our Location</span>
               <a href={SITE.mapUrl} target="_blank" rel="noopener noreferrer">
                 {SITE.addressShort}
               </a>
@@ -58,7 +58,7 @@ export default function Header() {
           <div className="cc-topbar__group">
             <span className="cc-topbar__item">
               <span className="material-symbols-rounded">language</span>
-              <span>Language</span>
+              <span className="cc-topbar__label">Language</span>
               <span style={{ fontWeight: 600, color: "#fff" }}>English</span>
             </span>
           </div>
