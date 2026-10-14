@@ -1,10 +1,18 @@
 /** @type {import('next').NextConfig} */
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 const nextConfig = {
-  // Static export -> deployable to GitHub Pages as a staging preview.
+  // Static export -> deployable anywhere static (incl. GitHub Pages staging).
   output: "export",
-  images: { unoptimized: true },
+  basePath,
+  assetPrefix: basePath || undefined,
   trailingSlash: true,
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH || "",
-  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || "",
+  images: {
+    // Custom loader (below) applies the base path to every image src — Next's
+    // built-in optimizer does not run with `output: "export"`.
+    loader: "custom",
+    loaderFile: "./lib/imageLoader.ts",
+  },
 };
+
 export default nextConfig;
