@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -13,6 +13,24 @@ export default function Header() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
+  // Close the drawer on route change.
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  // ESC closes; lock page scroll while the drawer is open.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
     <>
       {/* ---------- top bar ---------- */}
@@ -20,15 +38,18 @@ export default function Header() {
         <div className="cc-container cc-topbar__inner">
           <div className="cc-topbar__group">
             <span className="cc-topbar__item">
-              <span className="material-symbols-rounded">call</span> Call Us 24/7{" "}
+              <span className="material-symbols-rounded">call</span>
+              <span>Call Us 24/7</span>
               <a href={`tel:${SITE.phone}`}>{SITE.phoneDisplay}</a>
             </span>
             <span className="cc-topbar__item">
-              <span className="material-symbols-rounded">mail</span> Send Us Mail{" "}
+              <span className="material-symbols-rounded">mail</span>
+              <span>Send Us Mail</span>
               <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
             </span>
             <span className="cc-topbar__item">
-              <span className="material-symbols-rounded">location_on</span> Our Location{" "}
+              <span className="material-symbols-rounded">location_on</span>
+              <span>Our Location</span>
               <a href={SITE.mapUrl} target="_blank" rel="noopener noreferrer">
                 {SITE.addressShort}
               </a>
@@ -36,7 +57,8 @@ export default function Header() {
           </div>
           <div className="cc-topbar__group">
             <span className="cc-topbar__item">
-              <span className="material-symbols-rounded">language</span> Language
+              <span className="material-symbols-rounded">language</span>
+              <span>Language</span>
               <span style={{ fontWeight: 600, color: "#fff" }}>English</span>
             </span>
           </div>
@@ -61,7 +83,19 @@ export default function Header() {
             </span>
           </Link>
 
-          <nav className={`cc-nav ${open ? "is-open" : ""}`} id="cc-main-nav">
+          <nav
+            className={`cc-nav ${open ? "is-open" : ""}`}
+            id="cc-main-nav"
+            aria-label="Main navigation"
+          >
+            <button
+              type="button"
+              className="cc-nav__close"
+              aria-label="Close menu"
+              onClick={() => setOpen(false)}
+            >
+              <span className="material-symbols-rounded">close</span>
+            </button>
             {NAV.map((item) => (
               <Link
                 key={item.href}
@@ -74,14 +108,14 @@ export default function Header() {
             ))}
           </nav>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div className="cc-header__actions">
             <Link href="/get-in-touch" className="cc-btn cc-btn--header">
               GET A QUOTE
             </Link>
             <button
               type="button"
               className="cc-burger"
-              aria-label="Toggle navigation"
+              aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               aria-controls="cc-main-nav"
               onClick={() => setOpen((v) => !v)}
@@ -93,6 +127,13 @@ export default function Header() {
           </div>
         </div>
       </header>
+
+      {/* tap-outside / dim backdrop — mobile only */}
+      <div
+        className={`cc-nav-backdrop ${open ? "is-open" : ""}`}
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+      />
     </>
   );
 }
